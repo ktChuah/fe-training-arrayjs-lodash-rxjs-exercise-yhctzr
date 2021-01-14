@@ -90,26 +90,39 @@ export class AppComponent {
 
 
 
-    runArrayMethodExercise() {
+   runArrayMethodExercise() {
     // Given the ingredient list,
 
-
+    function isVege(itm, index) {
+      return itm.isVege;
+    }
+    const vegeIngredient1 = this.ingredient.filter(v => v.isVege);
     // Exercise 1: Output an array of ingredient that is vege
 
+    const vegeIngredient2: any[] = this.ingredient.filter((v, index) => { return v.isVege; });
+    const vegeIngredient3: any[] = this.ingredient.filter(function (v, index) { return v.isVege; });
+    const vegeIngredient4: any[] = this.ingredient.filter(isVege.bind(this));
+    console.log("Vege Ingredient1", vegeIngredient1);
+    console.log("Vege Ingredient2", vegeIngredient2);
+    console.log("Vege Ingredient3", vegeIngredient3);
+    console.log("Vege Ingredient4", vegeIngredient4);
 
     // Exercise 2: Output an array of ingredient's price
-
+    console.log("Ingredient Price", this.ingredient.map(v => v.price));
 
     // Exercise 3: Output the total price of all ingredient
+    const totalPrice = this.ingredient.reduce((acc, cur) => {
+      return acc + cur.price;
+    }, 0);
+    console.log(totalPrice);
 
+    // Exercise 4: Combine exercise 1-3, output the total cost of vege ingredient
+    const totalPriceVege = this.ingredient
+      .filter(v => v.isVege)
+      .map(v => v.price)
+      .reduce((acc, cur, index) => acc + cur, 0);
+    console.log(totalPriceVege);
 
-    // Exericse 4: Combine exercise 1-3, output the total cost of vege ingredientitm =
-
-
-    // console.log("Exercise 1", newList);
-    // console.log("Exercise 2", priceList);
-    // console.log("Exercise 3", totalPrice);
-    // console.log("Exercise 4", finalAnswer);
   }
 
 
@@ -133,6 +146,11 @@ export class AppComponent {
   runLodashExercise() {
     // total up the time need to prepare a vege burger, if no processing is needed, treat it as 0min
     // (hint: try use lodash-get)
+      const totalDuration: any[] = this.ingredient
+      .filter(v => v.isVege)
+      .reduce((acc, cur) => acc + _.get(cur, 'processInfo.duration', 0), 0);
+
+    console.log('Total Time', totalDuration);
   }
 
 
