@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import _ from "lodash";
 import {
-
   of,
   combineLatest,
   Observable,
@@ -32,9 +32,9 @@ import { cloneDeep } from "lodash-es";
 })
 export class AppComponent {
   constructor() {
-  // this.runArrayMethodExercise();
-  // this.runLodashExercise();
-  // this.runRxjsExercise();
+    // this.runArrayMethodExercise();
+    this.runLodashExercise();
+    this.runRxjsExercise();
   }
 
   ingredient = [
@@ -72,25 +72,7 @@ export class AppComponent {
     }
   ];
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   runArrayMethodExercise() {
+  runArrayMethodExercise() {
     // Given the ingredient list,
 
     function isVege(itm, index) {
@@ -99,8 +81,12 @@ export class AppComponent {
     const vegeIngredient1 = this.ingredient.filter(v => v.isVege);
     // Exercise 1: Output an array of ingredient that is vege
 
-    const vegeIngredient2: any[] = this.ingredient.filter((v, index) => { return v.isVege; });
-    const vegeIngredient3: any[] = this.ingredient.filter(function (v, index) { return v.isVege; });
+    const vegeIngredient2: any[] = this.ingredient.filter((v, index) => {
+      return v.isVege;
+    });
+    const vegeIngredient3: any[] = this.ingredient.filter(function(v, index) {
+      return v.isVege;
+    });
     const vegeIngredient4: any[] = this.ingredient.filter(isVege.bind(this));
     console.log("Vege Ingredient1", vegeIngredient1);
     console.log("Vege Ingredient2", vegeIngredient2);
@@ -122,67 +108,47 @@ export class AppComponent {
       .map(v => v.price)
       .reduce((acc, cur, index) => acc + cur, 0);
     console.log(totalPriceVege);
-
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   runLodashExercise() {
     // total up the time need to prepare a vege burger, if no processing is needed, treat it as 0min
     // (hint: try use lodash-get)
-      const totalDuration: any[] = this.ingredient
+    const totalDuration: any[] = this.ingredient
       .filter(v => v.isVege)
-      .reduce((acc, cur) => acc + _.get(cur, 'processInfo.duration', 0), 0);
+      .reduce((acc, cur) => acc + _.get(cur, "processInfo.duration", 0), 0);
 
-    console.log('Total Time', totalDuration);
+    console.log("Total Time", totalDuration);
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    runRxjsExercise(){
-
+  runRxjsExercise() {
     // Exericse 4: Combine exercise 1-3, output the Total cost of Vege Ingredient
-
-    // By refering the Exericse 4 in the ArrayMethodExercise: 
+    // By refering the Exericse 4 in the ArrayMethodExercise:
     // plsease reconstruct the solution in rxjs way.
+    const totalPriceVege = this.ingredient
+      .filter(v => v.isVege)
+      .map(v => v.price)
+      .reduce((acc, cur, index) => acc + cur, 0);
+    console.log(totalPriceVege);
 
+    // 'from' accept array input
+    const ingreList = from(this.ingredient)
+      .pipe(
+        // ** need to know the usage of each Operator and what each of them return **
+
+        // return Vege Object Array
+        filter(v => v.isVege),
+        // return Vege's Price Array
+        map(v => v.price),
+        // 'tap', emits latest value from 'Observable'
+        tap(v => {
+          // print each of Vege's price in Vege's Price Array
+          console.log(v);
+        }),
+        // Emits output of total of Vege's Price (Become the 'value' in '.subscribe(value....))
+        reduce((acc, cur, index) => acc + cur, 0)
+      )
+      .subscribe(value => {
+        console.log("Final Value", value);
+      });
   }
 }
